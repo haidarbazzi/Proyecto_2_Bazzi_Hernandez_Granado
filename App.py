@@ -110,7 +110,6 @@ class App():
         loop_continue = input("\nDesea guardar sus cambios?:\n1. Si.\n2. No.\n >>> ")
         if loop_continue == "1": 
             self.save()
-        self.start()
             
     def binary_search(self, arr, targetValue):
         """
