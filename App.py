@@ -99,7 +99,7 @@ class App():
                 print ("Ingresó una opción no válida.")
             
         artwork = Artwork(code, name, price, year, status,False) # Se guarda con el atributo false NO elimina, util luego para la compactación
-        self.principal_array.append([artwork])
+        self.principal_array.append(artwork)
         #Introducidos en los arreglos índices de codigo y nombre el atributo correspondiente y la posición donde se almacena en el array principal
         self.indexing_code_array.append([artwork.code,len(self.principal_array)-1])
         self.indexing_name_array.append([artwork.name,len(self.principal_array)-1])
@@ -110,6 +110,7 @@ class App():
         loop_continue = input("\nDesea guardar sus cambios?:\n1. Si.\n2. No.\n >>> ")
         if loop_continue == "1": 
             self.save()
+        self.start()
             
     def binary_search(self, arr, targetValue):
         """
@@ -129,25 +130,66 @@ class App():
                 high = mid - 1
         return -1 #Si el elemento no se encuentra se retorna -1
     
+    def artwork_search(self):
+        selection =""
+        result = 0
+        while True: 
+            selection = input("\nMÓDULO CONSULTAR UNA PINTURA.\n1. Para buscar pintura por COTA.\n2. Para buscar pintura por NOMBRE.\n3. Volver a menu principal.\n>>> ")
+            if selection == "1":
+                code = input("Indique la cota: >>> ")
+                result = self.binary_search(self.indexing_code_array, code)
+                # Para obtener el index donde se encuentra el code en el indexing_code_array
+                if result != -1:
+                    break
+                else:
+                    print("Esa cota no es válida")
+            elif selection == "2":
+                name = input("Indique el nombre: >>> ")
+                result = self.binary_search(self.indexing_name_array, name)
+                # Para obtener el index donde se encuentra el name en el indexing_name_array
+                if result != -1:
+                    break
+                else:
+                    print("Esa cota no es válida")
+            elif selection == "3":
+                break
+        
+        #Ahora con el index del indexing_array obtenemos la posición directamente del principal_array
+        principal_array_index = 0
+        if selection == "1":
+            principal_array_index = self.indexing_code_array[result][1] 
+        if selection == "2":
+            principal_array_index = self.indexing_name_array[result][1] 
+        if selection == "3":
+            self.start()
+        #Accedemos a la info del principal_array
+        artwork = self.principal_array[principal_array_index]
+        print("\nLos detalles de la obra seleccionada son: \n")
+        print(artwork.show_attr())
+
+
     def start(self):
         print("\nBIENVENIDO AL MUSEO UNIMET")
         self.uploadTXT()
+        
         print(self.indexing_name_array)
+        print(self.indexing_code_array)
+        
         while True: 
             print ("\n--- MENU PRINCIPAL ---")
             option = input ("1. Insertar una nueva pintura.\n2. Consultar una pintura.\n3. Cambiar status de una pintura.\n4. Eliminar una pintura. \n5. Compactar la base de datos. \n6. Salir\n >>> ")
             if option == "1": 
                 self.artwork_register()
             elif option == "2": 
-                break
+                self.artwork_search()
             elif option == "3": 
-                break
+                break 
             elif option == "4": 
-                break
+                break ## Para la eliminación artWork tiene un attr que se llama DELETE para que se ponga como true si se elimina y luego asi este atributo es TRUE en la compactación si se saca del principal_array definitivo.
             elif option == "5": 
-                break
+                break  #Pendiente con lo de arriba del artwork.delete. Los puse como attr del object porque si lo ponia como un array ([artwork, deleteTrue/False]) dentro del principal_array tenía problemas con el pickle
             elif option == "6": 
-                break
+                break 
             else: 
                 print ("Opción no valida, por favor seleccione una opción válida:\n>>>  ")
 
