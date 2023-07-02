@@ -53,8 +53,8 @@ class App():
                     number_counter +=1
                 elif letter.isalpha():
                     letter_counter +=1
-            if (letter_counter == 4) and (number_counter ==4):
-                code = code.upper()
+            code = code.upper()
+            if (letter_counter == 4) and (number_counter ==4) and self.binary_search(self.indexing_code_array, code) ==-1:
                 break
             else:
                 print("Secuencia no válida, vuelva a intentarlo.")
@@ -62,8 +62,9 @@ class App():
         #Petición y validación del nombre
         while True:
             name = input("\nIntroduzca el nombre de la obra 'máximo 10 caracteres': \n>>> ")
-            if len(name) <=10: 
-                name = name.upper()
+            name = name.upper()
+
+            if len(name) <=10 and (self.binary_search(self.indexing_name_array, name) == -1): 
                 break
             else: 
                 print ("Ingresó una secuencia no válida.")
@@ -104,17 +105,34 @@ class App():
         self.indexing_name_array.append([artwork.name,len(self.principal_array)-1])
         #Organizamos los arreglos índices de codigo y nombre para que esten organizados y se pueda hacer busqueda binaria. 
         self.indexing_code_array = sorted(self.indexing_code_array, key=lambda x: x[0])
-        self.indexing_name_array = sorted(self.indexing_code_array, key=lambda x: x[0])
+        self.indexing_name_array = sorted(self.indexing_name_array, key=lambda x: x[0])
         
         loop_continue = input("\nDesea guardar sus cambios?:\n1. Si.\n2. No.\n >>> ")
         if loop_continue == "1": 
             self.save()
             
+    def binary_search(self, arr, targetValue):
+        """
+        Algoritmo de búsqueda binaria
+        """
+        low = 0
+        high = len(arr) - 1
 
-
+        while low <= high:
+            mid = (low + high) // 2
+            mid_value = arr[mid][0]  #Posición 0 porque es la posición donde se guarda el name o el code. En la posición 1 se guarda el index
+            if mid_value == targetValue:
+                return mid
+            elif mid_value < targetValue:
+                low = mid + 1
+            else:
+                high = mid - 1
+        return -1 #Si el elemento no se encuentra se retorna -1
+    
     def start(self):
         print("\nBIENVENIDO AL MUSEO UNIMET")
         self.uploadTXT()
+        print(self.indexing_name_array)
         while True: 
             print ("\n--- MENU PRINCIPAL ---")
             option = input ("1. Insertar una nueva pintura.\n2. Consultar una pintura.\n3. Cambiar status de una pintura.\n4. Eliminar una pintura. \n5. Compactar la base de datos. \n6. Salir\n >>> ")
